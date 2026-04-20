@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowDesk — Your team, in sync.</title>
+    <meta name="description" content="FlowDesk is the project management tool built for remote teams. Collaboration in real-time, smart automation, and zero unnecessary meetings.">
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* Color Palette */
+            --color-white: #FFFFFF;
+            --color-bg: #F8F8FF;
+            --color-dark: #1A1A2E;
+            --color-dark-2: #16213E;
+            --color-purple: #6C63FF;
+            --color-purple-light: #8B85FF;
+            --color-purple-faint: rgba(108, 99, 255, 0.08);
+            --color-border: #E4E4F0;
+            --color-text-muted: #6B7280;
+            --color-text-light: #9CA3AF;
+            --color-success: #10B981;
+
+            /* Typography */
+            --font-heading: 'Inter', sans-serif;
+            --font-body: 'Inter', sans-serif;
+
+            /* Shadows & Radius */
+            --radius: 12px;
+            --radius-lg: 20px;
+            --transition: 0.25s ease;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+            --shadow-purple: 0 8px 30px rgba(108, 99, 255, 0.25);
+        }
+
+        /* RESET & BASE */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-white);
+            color: var(--color-dark);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 700; line-height: 1.15; color: var(--color-dark); letter-spacing: -0.02em; }
+        a { text-decoration: none; color: inherit; transition: color var(--transition); }
+        img { max-width: 100%; display: block; }
+
+        /* LAYOUT */
+        .container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
+        .section-pad { padding: 5rem 0; }
+        @media(min-width: 768px) { .section-pad { padding: 7rem 0; } }
+
+        /* Reveal Animations */
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-left { opacity: 0; transform: translateX(-24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+        .reveal-right { opacity: 0; transform: translateX(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+
+        /* Badges */
+        .badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            background-color: var(--color-purple-faint);
+            color: var(--color-purple);
+            font-size: 0.8rem; font-weight: 600;
+            padding: 0.4rem 0.9rem;
+            border-radius: 99px;
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            letter-spacing: 0.02em;
+        }
+
+        /* Primary CTA Button */
+        .btn-primary {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            background: var(--color-purple);
+            color: var(--color-white);
+            font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--radius);
+            border: none; cursor: pointer;
+            transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+            box-shadow: var(--shadow-purple);
+            white-space: nowrap;
+        }
+        .btn-primary:hover { background: var(--color-purple-light); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(108, 99, 255, 0.35); }
+        .btn-primary:active { transform: translateY(0); }
+
+        .btn-ghost {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: var(--color-dark); font-weight: 500; font-size: 0.95rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: var(--radius);
+            border: 1.5px solid var(--color-border);
+            background: var(--color-white);
+            cursor: pointer; transition: all var(--transition);
+        }
+        .btn-ghost:hover { border-color: var(--color-purple); color: var(--color-purple); background: var(--color-purple-faint); }
+
+        /* NAVIGATION */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 1rem 0;
+            transition: background var(--transition), box-shadow var(--transition), backdrop-filter var(--transition);
+        }
+        header.scrolled {
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 1px 0 var(--color-border);
+        }
+        .nav-wrap { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo {
+            display: flex; align-items: center; gap: 0.6rem;
+            font-size: 1.25rem; font-weight: 800; color: var(--color-dark); letter-spacing: -0.03em;
+        }
+        .nav-logo .logo-icon {
+            width: 32px; height: 32px; background: var(--color-purple);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-logo .logo-icon svg { width: 18px; height: 18px; color: white; }
+        .desktop-nav { display: none; gap: 2rem; align-items: center; font-size: 0.9rem; font-weight: 500; color: var(--color-text-muted); }
+        .desktop-nav a:not(.btn):hover { color: var(--color-dark); }
+        .nav-actions { display: none; gap: 0.75rem; align-items: center; }
+
+        .mobile-btn { background: none; border: none; cursor: pointer; color: var(--color-dark); display: block; }
+        .mobile-menu {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: var(--color-white); z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2.5rem;
+            opacity: 0; pointer-events: none; transition: opacity var(--transition);
+            font-size: 1.5rem; font-weight: 700;
+        }
+        .mobile-menu.active { opacity: 1; pointer-events: all; }
+        .mobile-menu a { color: var(--color-dark); }
+        .mobile-menu a:hover { color: var(--color-purple); }
+        .mobile-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; cursor: pointer; color: var(--color-dark); }
+
+        @media(min-width: 900px) { .mobile-btn { display: none; } .desktop-nav { display: flex; } .nav-actions { display: flex; } }
+
+        /* HERO SECTION */
+        .hero {
+            padding: 9rem 0 5rem 0;
+            background-color: var(--color-white);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle, #DDD8FF 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.6;
+            z-index: 0;
+        }
+        .hero::after {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at center, transparent 40%, var(--color-white) 90%);
+            z-index: 1;
+        }
+        .hero-inner { position: relative; z-index: 2; text-align: center; }
+        .hero h1 {
+            font-size: clamp(2.8rem, 7vw, 5rem);
+            margin-bottom: 1.5rem;
+            max-width: 750px; margin-left: auto; margin-right: auto;
+            background: linear-gradient(135deg, var(--color-dark) 0%, #4B45A1 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero p {
+            font-size: 1.2rem; color: var(--color-text-muted); font-weight: 400;
+            max-width: 520px; margin: 0 auto 2.5rem auto; line-height: 1.7;
+        }
+        .hero-actions { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .hero-subtext { font-size: 0.85rem; color: var(--color-text-light); display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .hero-subtext svg { color: var(--color-success); }
+
+        .hero-mockup {
+            margin: 4rem auto 0 auto;
+            max-width: 900px;
+            border-radius: var(--radius-lg);
+            border: 1.5px solid var(--color-border);
+            box-shadow: var(--shadow-lg), 0 0 0 6px rgba(108, 99, 255, 0.06);
+            overflow: hidden;
+            background: #F0EFFF;
+        }
+        .mockup-bar { background: var(--color-dark); padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-red { background: #FF5F57; }
+        .dot-yellow { background: #FFBD2E; }
+        .dot-green { background: #28CA41; }
+
+        .mockup-body { padding: 2rem; display: grid; grid-template-columns: 200px 1fr; gap: 1.5rem; min-height: 400px; }
+        @media(max-width: 600px) { .mockup-body { grid-template-columns: 1fr; min-height: auto; } }
+
+        .mockup-sidebar { background: rgba(255,255,255,0.6); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .sidebar-item {
+            padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.8rem; font-weight: 500;
+            display: flex; align-items: center; gap: 0.5rem; color: var(--color-text-muted);
+            cursor: default;
+        }
+        .sidebar-item.active { background: var(--color-purple); color: white; }
+        .sidebar-item svg { width: 14px; height: 14px; }
+
+        .mockup-content { background: white; border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+        .mockup-header { font-size: 0.9rem; font-weight: 700; margin-bottom: 1rem; text-align: left; color: var(--color-dark); }
+        .task-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0; border-bottom: 1px solid var(--color-border); font-size: 0.8rem; }
+        .task-row:last-child { border-bottom: none; }
+        .task-check { width: 16px; height: 16px; border-radius: 4px; flex-shrink: 0; }
+        .task-check.done { background: var(--color-purple); display: flex; align-items: center; justify-content: center; }
+        .task-check.done svg { width: 10px; height: 10px; color: white; }
+        .task-check.undone { border: 1.5px solid var(--color-border); }
+        .task-label { flex: 1; color: var(--color-dark); font-weight: 500; text-align: left; }
+        .task-label.done-text { color: var(--color-text-light); text-decoration: line-through; }
+        .task-badge { font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.5rem; border-radius: 4px; }
+        .badge-blue { background: #EEF2FF; color: #4338CA; }
+        .badge-green { background: #D1FAE5; color: #065F46; }
+        .badge-orange { background: #FEF3C7; color: #92400E; }
+        .badge-purple { background: #EDE9FE; color: #5B21B6; }
+        .task-avatar { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: white; }
+
+        /* SOCIAL PROOF */
+        .social-proof { padding: 3rem 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); background: var(--color-bg); }
+        .social-proof-label { text-align: center; font-size: 0.85rem; color: var(--color-text-light); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; margin-bottom: 2rem; }
+        .logos-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 3rem; }
+        .company-name { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.03em; color: var(--color-dark); display: flex; align-items: center; gap: 0.4rem; }
+
+        /* METRICS BAR */
+        .metrics-bar { background: var(--color-dark); padding: 4rem 0; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; text-align: center; }
+        @media(min-width: 768px) { .metrics-grid { grid-template-columns: repeat(4, 1fr); } }
+        .metric-number { font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; color: var(--color-purple-light); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+        .metric-label { font-size: 0.9rem; color: rgba(255,255,255,0.55); letter-spacing: 0.02em; }
+
+        /* INTEGRATIONS */
+        .integrations { background: var(--color-bg); }
+        .integrations-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3rem; }
+        @media(min-width: 600px) { .integrations-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media(min-width: 900px) { .integrations-grid { grid-template-columns: repeat(8, 1fr); } }
+        .integration-chip {
+            background: white; border: 1.5px solid var(--color-border); border-radius: var(--radius);
+            padding: 1rem 0.75rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            font-size: 0.75rem; font-weight: 600; color: var(--color-text-muted);
+            transition: all var(--transition); cursor: default;
+        }
+        .integration-chip:hover { border-color: var(--color-purple); transform: translateY(-3px); box-shadow: var(--shadow-md); color: var(--color-dark); }
+        .integration-chip svg { width: 28px; height: 28px; }
+
+        /* FEATURES SECTION */
+        .section-header { text-align: center; max-width: 600px; margin: 0 auto 4rem auto; }
+        .section-header h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 1rem; }
+        .section-header p { font-size: 1.05rem; color: var(--color-text-muted); }
+
+        .feature-block { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; margin-bottom: 5rem; }
+        @media(min-width: 900px) {
+            .feature-block { grid-template-columns: 1fr 1fr; gap: 5rem; }
+            .feature-block.reverse .feature-visual { order: -1; }
+        }
+        .feature-text .feature-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: var(--color-purple-faint); display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+        .feature-text .feature-icon svg { width: 22px; height: 22px; color: var(--color-purple); }
+        .feature-text h3 { font-size: 1.8rem; margin-bottom: 1rem; }
+        .feature-text p { font-size: 1rem; color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.8; }
+        .feature-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+        .feature-bullets li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; color: var(--color-text-muted); text-align: left; }
+        .feature-bullets li svg { width: 18px; height: 18px; color: var(--color-success); flex-shrink: 0; margin-top: 2px; }
+
+        .feature-visual { border-radius: var(--radius-lg); overflow: hidden; border: 1.5px solid var(--color-border); box-shadow: var(--shadow-md); }
+        .fv-placeholder { background: linear-gradient(135deg, #F5F3FF, #EDE9FE); padding: 2rem; min-height: 320px; display: flex; flex-direction: column; gap: 1rem; }
+        .fv-bar { height: 10px; border-radius: 99px; background: rgba(108, 99, 255, 0.2); }
+        .fv-bar.filled { background: var(--color-purple); }
+        .fv-card { background: white; border-radius: 10px; padding: 1rem 1.25rem; box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 1rem; }
+        .fv-label { font-size: 0.85rem; font-weight: 600; color: var(--color-dark); flex: 1; text-align: left; }
+        .fv-pct { font-size: 0.85rem; font-weight: 700; color: var(--color-purple); }
+
+        .kanban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+        .kanban-col-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: 0.75rem; text-align: center; }
+        .kanban-card { background: white; border-radius: 8px; padding: 0.75rem; box-shadow: var(--shadow-sm); margin-bottom: 0.5rem; font-size: 0.75rem; border-left: 3px solid var(--color-purple); text-align: left; }
+        .kanban-card-label { font-weight: 600; color: var(--color-dark); margin-bottom: 0.3rem; }
+
+        /* HOW IT WORKS */
+        .how-it-works { background: var(--color-dark); color: white; }
+        .steps-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; }
+        @media(min-width: 768px) { .steps-grid { grid-template-columns: repeat(3, 1fr); } }
+        .step-card { text-align: center; padding: 2rem; }
+        .step-number { width: 56px; height: 56px; background: var(--color-purple-faint); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; font-weight: 800; color: var(--color-purple); margin: 0 auto 1.5rem auto; border: 1px solid rgba(108, 99, 255, 0.3); }
+
+        /* TESTIMONIALS SECTION */
+        .testimonials { background: var(--color-bg); }
+        .t-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media(min-width: 768px) { .t-grid { grid-template-columns: repeat(3, 1fr); } }
+        .t-card { background: white; border: 1.5px solid var(--color-border); border-radius: var(--radius-lg); padding: 2rem; transition: all var(--transition); background: white; }
+        .t-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+        .t-stars { display: flex; gap: 3px; margin-bottom: 1.25rem; justify-content: center; }
+        .t-stars svg { width: 16px; height: 16px; color: #F59E0B; }
+        .t-text { font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.8; margin-bottom: 1.5rem; text-align: center; font-style: italic; }
+        .t-author { display: flex; align-items: center; gap: 0.75rem; justify-content: center; }
+        .t-info { text-align: left; }
+        .t-name { font-weight: 700; color: var(--color-dark); font-size: 0.9rem; }
+        .t-title { color: var(--color-text-muted); font-size: 0.8rem; }
+
+        /* PRICING */
+        /* ────────────────────────────────
+           PRICING
+        ──────────────────────────────── */
+        .pricing { background: white; }
+        .pricing-toggle { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 3.5rem; font-size: 0.95rem; font-weight: 500; }
+        .save-badge { background: #D1FAE5; color: #065F46; font-size: 0.75rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 99px; }
+        .toggle-pill { width: 48px; height: 26px; background: var(--color-purple); border-radius: 99px; position: relative; cursor: pointer; transition: background var(--transition); }
+        .toggle-pill::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: transform var(--transition); }
+        .toggle-pill.annual::after { transform: translateX(22px); }
+
+        .pricing-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media(min-width: 900px) { .pricing-grid { grid-template-columns: repeat(3, 1fr); } }
+
+        .pricing-card {
+            border: 1.5px solid var(--color-border); border-radius: var(--radius-lg);
+            padding: 2rem; display: flex; flex-direction: column;
+            transition: all var(--transition);
+            background: white;
+        }
+        .pricing-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+        .pricing-card.featured {
+            border-color: var(--color-purple);
+            background: var(--color-dark);
+            color: white;
+            box-shadow: var(--shadow-purple);
+            position: relative;
+        }
+        .popular-tag { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--color-purple); color: var(--color-white); font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.9rem; border-radius: 99px; text-transform: uppercase; }
+        .tier-name { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 1rem; }
+        .tier-price { font-size: 3rem; font-weight: 800; margin-bottom: 0.25rem; color: var(--color-dark); }
+        .featured .tier-price { color: var(--color-white); }
+        .tier-period { font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 1.5rem; }
+        .tier-desc { font-size: 0.9rem; color: var(--color-text-muted); margin-bottom: 2rem; flex-grow: 1; text-align: left; }
+        .featured .tier-desc { color: rgba(255,255,255,0.7); }
+        .tier-features { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; text-align: left; }
+        .tier-features li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9rem; color: var(--color-text-muted); }
+        .featured .tier-features li { color: rgba(255,255,255,0.8); }
+        .tier-features li svg { width: 16px; height: 16px; color: var(--color-success); flex-shrink: 0; }
+        .btn-pricing { display: block; text-align: center; padding: 0.875rem 1.5rem; border-radius: var(--radius); font-weight: 600; transition: all var(--transition); cursor: pointer; border: none; width: 100%; }
+        .pricing-card:not(.featured) .btn-pricing { background: var(--color-dark); color: var(--color-white); }
+        .pricing-card:not(.featured) .btn-pricing:hover { opacity: 0.9; }
+        .pricing-card.featured .btn-pricing { background: var(--color-white); color: var(--color-dark); }
+        .pricing-card.featured .btn-pricing:hover { background: var(--color-purple-faint); color: var(--color-purple); }
+
+        /* FAQ SECTION */
+        .faq { background: var(--color-bg); }
+        .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+        .faq-item { background: var(--color-white); border: 1.5px solid var(--color-border); border-radius: var(--radius); overflow: hidden; transition: border-color var(--transition); }
+        .faq-item.active { border-color: var(--color-purple); }
+        .faq-btn { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; background: none; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: var(--color-dark); text-align: left; font-family: var(--font-body); }
+        .faq-btn svg { width: 20px; height: 20px; color: var(--color-text-light); transition: transform var(--transition); }
+        .faq-item.active .faq-btn svg { transform: rotate(180deg); color: var(--color-purple); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .faq-answer p { padding: 0 1.5rem 1.5rem 1.5rem; font-size: 0.95rem; color: var(--color-text-muted); line-height: 1.7; }
+
+        /* COMPARISON TABLE */
+        .comparison { background: var(--color-white); }
+        .comp-table-wrap { overflow-x: auto; margin-top: 3rem; }
+        .comp-table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+        .comp-table th, .comp-table td { padding: 1.5rem; border-bottom: 1px solid var(--color-border); }
+        .comp-table th { font-weight: 700; color: var(--color-dark); background: var(--color-bg); }
+        .comp-table .feature-col { font-weight: 600; width: 40%; }
+        .comp-table .flowdesk-col { background: var(--color-purple-faint); color: var(--color-purple); font-weight: 700; text-align: center; width: 30%; }
+        .comp-table .others-col { text-align: center; color: var(--color-text-light); width: 30%; }
+        .check-icon { color: var(--color-success); font-weight: 900; }
+        .cross-icon { color: #EF4444; font-weight: 900; }
+
+        /* ROI CALCULATOR */
+        .roi-calc { background: var(--color-dark); color: white; border-radius: var(--radius-lg); padding: 3rem; margin-top: 4rem; box-shadow: var(--shadow-lg); }
+        .roi-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; }
+        @media(min-width: 768px) { .roi-grid { grid-template-columns: 1.2fr 1fr; } }
+        .roi-inputs h3 { color: white; font-size: 2rem; margin-bottom: 1.5rem; }
+        .slider-wrap { margin-bottom: 2rem; }
+        .slider-label { display: flex; justify-content: space-between; margin-bottom: 1rem; font-weight: 600; color: rgba(255,255,255,0.8); }
+        input[type=range] { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 99px; appearance: none; outline: none; }
+        input[type=range]::-webkit-slider-thumb { appearance: none; width: 24px; height: 24px; background: var(--color-purple-light); border-radius: 50%; cursor: pointer; box-shadow: 0 0 15px rgba(108,99,255,0.4); }
+        .roi-results { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 2rem; text-align: center; }
+        .roi-stat { margin-bottom: 2rem; }
+        .roi-stat:last-child { margin: 0; }
+        .roi-val { display: block; font-size: 3rem; font-weight: 800; color: var(--color-purple-light); line-height: 1; margin-bottom: 0.5rem; }
+        .roi-label { font-size: 0.9rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* FINAL CTA SECTION */
+        .final-cta { background-color: var(--color-purple); padding: 6rem 0; text-align: center; color: var(--color-white); }
+        .final-cta-inner { max-width: 650px; margin: 0 auto; }
+        .final-cta h2 { color: var(--color-white); font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1.5rem; }
+        .final-cta p { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 2.5rem; }
+        .final-cta .btn-primary { background: var(--color-white); color: var(--color-purple); box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .final-cta .btn-primary:hover { background: var(--color-bg); transform: translateY(-2px); }
+
+        /* FOOTER */
+        footer { background: var(--color-dark); border-top: 1px solid rgba(255,255,255,0.08); padding: 5rem 0 3rem 0; color: var(--color-white); }
+        .footer-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; margin-bottom: 4rem; }
+        @media(min-width: 768px) { .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+        .footer-brand .nav-logo { color: var(--color-white); margin-bottom: 1.5rem; }
+        .footer-brand p { color: var(--color-text-light); max-width: 300px; font-size: 0.9rem; }
+        .footer-col h5 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+        .footer-col ul a { font-size: 0.9rem; color: rgba(255,255,255,0.45); }
+        .footer-col ul a:hover { color: var(--color-white); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 2rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: space-between; font-size: 0.8rem; color: rgba(255,255,255,0.3); }
+        @media(min-width: 768px) { .footer-bottom { flex-direction: row; } }
+        .social-links { display: flex; gap: 1.5rem; }
+        .social-links a:hover { color: var(--color-white); }
+    </style>
+</head>
+<body>
+
+    <!-- 1. NAVIGATION -->
+    <header id="header">
+        <div class="container nav-wrap">
+            <a href="#" class="nav-logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                FlowDesk
+            </a>
+            <nav class="desktop-nav">
+                <a href="#features">Features</a>
+                <a href="#workflow">Workflow</a>
+                <a href="#pricing">Pricing</a>
+                <a href="#faq">FAQ</a>
+                <a href="#">Resources</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="#" class="btn-ghost" style="padding: 0.6rem 1.25rem; font-size:0.875rem;">Log In</a>
+                <a href="#" class="btn-primary" style="padding: 0.6rem 1.25rem; font-size:0.875rem;">Get Started</a>
+            </div>
+            <button class="mobile-btn" id="mobile-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- MOBILE MENU OVERLAY -->
+    <div class="mobile-menu" id="mobile-menu">
+        <button class="mobile-close" id="mobile-close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <a href="#features">Features</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <br>
+        <a href="#" class="btn-primary">Start Free Trial</a>
+    </div>
+
+    <main>
+        <!-- 1. HERO SECTION -->
+        <section class="hero">
+            <div class="container hero-inner">
+                <div class="reveal">
+                    <span class="badge" style="margin-bottom: 1.5rem;">Version 2.0 is now live</span>
+                </div>
+                <h1 class="reveal delay-1">Your team,<br>finally in sync.</h1>
+                <p class="reveal delay-2">FlowDesk centralizes your tasks, docs, and communication in one workspace. Built for high-performance teams that value action over meetings.</p>
+                <div class="hero-actions reveal delay-3">
+                    <a href="#" class="btn-primary">Start Free Trial</a>
+                    <a href="#features" class="btn-ghost">How it works</a>
+                </div>
+                <p class="hero-subtext reveal delay-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    No credit card required. 14-day free trial.
+                </p>
+
+                <!-- HERO MOCKUP -->
+                <div class="hero-mockup reveal delay-4">
+                    <div class="mockup-bar">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="mockup-body">
+                        <div class="mockup-sidebar">
+                            <div class="sidebar-item active">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                                Dashboard
+                            </div>
+                            <div class="sidebar-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                                Tasks
+                            </div>
+                            <div class="sidebar-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                Team Hub
+                            </div>
+                            <div class="sidebar-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                Docs
+                            </div>
+                        </div>
+                        <div class="mockup-content">
+                            <div class="mockup-header">Sprint 12 — Week of April 21</div>
+                            <div class="task-row">
+                                <div class="task-check done">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                </div>
+                                <span class="task-label done-text">Redesign onboarding flow</span>
+                                <span class="task-badge badge-green">Completed</span>
+                                <div class="task-avatar" style="background:#6C63FF;">SR</div>
+                            </div>
+                            <div class="task-row">
+                                <div class="task-check undone"></div>
+                                <span class="task-label">Integration API: Slack webhooks</span>
+                                <span class="task-badge badge-blue">In Progress</span>
+                                <div class="task-avatar" style="background:#10B981;">DM</div>
+                            </div>
+                            <div class="task-row">
+                                <div class="task-check undone"></div>
+                                <span class="task-label">Mobile app dark mode assets</span>
+                                <span class="task-badge badge-orange">Review</span>
+                                <div class="task-avatar" style="background:#F59E0B;">AL</div>
+                            </div>
+                            <div class="task-row">
+                                <div class="task-check undone"></div>
+                                <span class="task-label">Quarterly security audit</span>
+                                <span class="task-badge badge-purple">Pending</span>
+                                <div class="task-avatar" style="background:#EF4444;">KT</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. SOCIAL PROOF -->
+        <section class="social-proof reveal">
+            <div class="container">
+                <p class="social-proof-label">Trusted by teams at the world's most innovative companies</p>
+                <div class="logos-row">
+                    <span class="company-name" style="filter: grayscale(1); opacity: 0.7;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.8 6.5C18.1 5.8 17.1 5.3 16 5.1V2.5C16 1.8 15.5 1.3 14.8 1.3H9.2C8.5 1.3 8 1.8 8 2.5V5.1C6.9 5.3 5.9 5.8 5.2 6.5C4.4 7.2 4 8.2 4 9.3C4 11.5 5.8 13.3 8 13.3V18.7C6.8 18.5 5.8 18 5.1 17.1C4.9 16.9 4.6 16.8 4.3 16.9C4 17 3.8 17.2 3.7 17.5C3.6 17.9 3.7 18.2 4 18.5C4.9 19.8 6.4 20.7 8 20.7V21.5C8 22.2 8.5 22.7 9.2 22.7H14.8C15.5 22.7 16 22.2 16 21.5V20.7C17.6 20.7 19.1 19.8 20 18.5C20.3 18.2 20.4 17.9 20.3 17.5C20.2 17.2 20 17 19.7 16.9C19.4 16.8 19.1 16.9 18.9 17.1C18.2 18 17.2 18.5 16 18.7V13.3C18.2 13.3 20 11.5 20 9.3C20 8.2 19.6 7.2 18.8 6.5ZM10 3.3H14V5.1C13.4 5 12.7 5 12 5C11.3 5 10.6 5 10 5.1V3.3ZM14 20.7H10V18.9C10.6 19 11.3 19 12 19C12.7 19 13.4 19 14 18.9V20.7ZM8 11.3C6.9 11.3 6 10.4 6 9.3C6 8.2 6.9 7.3 8 7.3V11.3ZM16 11.3V7.3C17.1 7.3 18 8.2 18 9.3C18 10.4 17.1 11.3 16 11.3Z"/></svg>
+                        Shopify
+                    </span>
+                    <span class="company-name" style="filter: grayscale(1); opacity: 0.7;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm3.19 12.35c-.88.88-2.31.88-3.19 0l-3.35-3.35c-.88-.88-.88-2.31 0-3.19.88-.88 2.31-.88 3.19 0l3.35 3.35c.88.88.88 2.31 0 3.19z"/></svg>
+                        Figma
+                    </span>
+                    <span class="company-name" style="filter: grayscale(1); opacity: 0.7;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M13.97 11H3.3l-.61 2.56c-.53 2.22.4 4.05 2.85 4.05.95 0 1.83-.3 2.45-.75l.1.41c.21.84.95 1.4 1.81 1.4h9.1c.86 0 1.6-.56 1.81-1.4l1.1-4.4c.21-.84-.33-1.67-1.19-1.67h-6.75l.61-2.56c.53-2.22-.4-4.05-2.85-4.05-.95 0-1.83.3-2.45.75l-.1-.41c-.21-.84-.95-1.4-1.81-1.4H2.1c-.86 0-1.6.56-1.81 1.4L.1 1.05C-.11 1.89.43 2.72 1.29 2.72h6.75l-.61 2.56c-.53 2.22.4 4.05-2.85 4.05z"/></svg>
+                        Stripe
+                    </span>
+                    <span class="company-name" style="filter: grayscale(1); opacity: 0.7;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        Notion
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. METRICS BAR -->
+        <section class="metrics-bar reveal">
+            <div class="container">
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-number">1,200+</div>
+                        <div class="metric-label">Active Teams</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-number">4.9/5</div>
+                        <div class="metric-label">Average Rating</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-number">12min</div>
+                        <div class="metric-label">Saved per Standup</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-number">99.9%</div>
+                        <div class="metric-label">Uptime Record</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. FEATURES -->
+        <section id="features" class="section-pad features">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="badge" style="margin-bottom: 1rem;">Built for modern teams</span>
+                    <h2>Everything you need. Nothing you don't.</h2>
+                    <p>Stop juggling five different tools. FlowDesk replaces your tracker, your docs, and your morning standups.</p>
+                </div>
+
+                <!-- Feature 1 -->
+                <div class="feature-block">
+                    <div class="feature-text reveal-left">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                        </div>
+                        <h3>Kanban and List views, built for speed</h3>
+                        <p>Switch between Kanban, List, and Timeline views in one click. FlowDesk synchronizes everything in real-time so the team always has one source of truth.</p>
+                        <ul class="feature-bullets">
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Bulk action editing for fast updates</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Keyboard shortcuts for everything</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Custom workflows and status tags</li>
+                        </ul>
+                    </div>
+                    <div class="feature-visual reveal-right">
+                        <!-- Simulated Kanban -->
+                        <div class="fv-placeholder">
+                            <div class="kanban-grid">
+                                <div>
+                                    <div class="kanban-col-title">To Do</div>
+                                    <div class="kanban-card"><div class="kanban-card-label">Pricing page</div></div>
+                                    <div class="kanban-card"><div class="kanban-card-label">Marketing assets</div></div>
+                                </div>
+                                <div>
+                                    <div class="kanban-col-title">Doing</div>
+                                    <div class="kanban-card" style="border-left-color:#10B981;"><div class="kanban-card-label">API Rate limiting</div></div>
+                                </div>
+                                <div>
+                                    <div class="kanban-col-title">Done</div>
+                                    <div class="kanban-card" style="opacity:0.6;"><div class="kanban-card-label">Auth migration</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 2: Reverse -->
+                <div class="feature-block reverse">
+                    <div class="feature-text reveal-right">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                        </div>
+                        <h3>Real-time progress reports, zero meetings</h3>
+                        <p>FlowDesk automatically generates daily digests and sprint reports. Know exactly what was shipped and what's blocked without jumping on another Zoom call.</p>
+                        <ul class="feature-bullets">
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Automated daily standup digests</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Real-time burn-down charts</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Smart workload management</li>
+                        </ul>
+                    </div>
+                    <div class="feature-visual reveal-left">
+                        <div class="fv-placeholder" style="justify-content:center;">
+                            <div class="fv-card"><div class="fv-bar filled" style="width:70%;"></div><div class="fv-label">Sprint completion</div><div class="fv-pct">78%</div></div>
+                            <div class="fv-card"><div class="fv-bar filled" style="width:45%; background:#10B981;"></div><div class="fv-label">Lead time</div><div class="fv-pct">2.4d</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="feature-block">
+                    <div class="feature-text reveal-left">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <h3>Async communication, right where you work</h3>
+                        <p>Ditch the tool switching. Comment on tasks, share video updates, and edit collaborative documents without ever leaving FlowDesk.</p>
+                        <ul class="feature-bullets">
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Rich text and Loom-style video comments</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Collaborative documentation (Docs)</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Push notifications when it matters</li>
+                        </ul>
+                    </div>
+                    <div class="feature-visual reveal-right">
+                        <div class="fv-placeholder" style="background:#EEF2FF;">
+                            <div style="background:white; border-radius:10px; padding:1.5rem; text-align:left; font-size:0.8rem;">
+                                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
+                                    <div class="task-avatar" style="background:#6C63FF; width:28px; height:28px;">SR</div>
+                                    <div><div style="font-weight:700;">Sara Kovacs</div><div style="font-size:0.7rem; color:gray;">2 hours ago</div></div>
+                                </div>
+                                <p style="color:#4B5563;">"I've updated the API documentation for the new Slack integration. Does the team need a video walkthrough or is the doc enough?"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. INTEGRATIONS SECTION -->
+        <section class="section-pad integrations reveal">
+            <div class="container text-center">
+                <div class="section-header">
+                    <span class="badge" style="margin-bottom: 1rem;">Connect anything</span>
+                    <h2>Works with the tools you already use.</h2>
+                    <p>FlowDesk plays nice with your favorites. One-click setup.</p>
+                </div>
+                <div class="integrations-grid">
+                    <div class="integration-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M6 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm4-2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 2a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm4-2a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm-8 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm4-2a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/></svg>Slack</div>
+                    <div class="integration-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48 0-.24-.01-.88-.01-1.72-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.69 0 3.84-2.33 4.69-4.56 4.94.36.31.68.92.68 1.85 0 1.34-.01 2.42-.01 2.75 0 .26.18.58.69.48C19.13 20.17 22 16.42 22 12c0-5.53-4.47-10-10-10z"/></svg>GitHub</div>
+                    <div class="integration-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>Figma</div>
+                    <div class="integration-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M11 2h2v2h-2V2zM7 6h10v2H7V6zm-3 4h16v12H4V10z"/></svg>Linear</div>
+                    <div class="integration-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Intercom</div>
+                    <div class="integration-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Zoom</div>
+                    <div class="integration-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Zendesk</div>
+                    <div class="integration-chip"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Drive</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. TESTIMONIALS -->
+        <section class="section-pad testimonials reveal">
+            <div class="container text-center">
+                <div class="section-header">
+                    <span class="badge" style="margin-bottom: 1rem;">Social Proof</span>
+                    <h2>Loved by high-performance teams.</h2>
+                </div>
+                <div class="t-grid">
+                    <div class="t-card reveal delay-1">
+                        <div class="t-stars">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </div>
+                        <p class="t-text">"We cut our Monday morning status meeting from 60 minutes to zero. FlowDesk's daily digest does what we used to do manually. Our engineers have an extra 4 hours per week back."</p>
+                        <div class="t-author">
+                            <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=120&auto=format&fit=crop&crop=face" alt="Sara Kovacs" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                            <div class="t-info">
+                                <div class="t-name">Sara Kovacs</div>
+                                <div class="t-title">CTO, Prive Labs</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="t-card reveal delay-2">
+                        <div class="t-stars">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </div>
+                        <p class="t-text">"I've used every tool in the book. FlowDesk is the first one where my reports actually update their tasks proactively. The async comment system is a game changer."</p>
+                        <div class="t-author">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=120&auto=format&fit=crop&crop=face" alt="Daniel Mwangi" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                            <div class="t-info">
+                                <div class="t-name">Daniel Mwangi</div>
+                                <div class="t-title">Team Lead, Voltex</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="t-card reveal delay-3">
+                        <div class="t-stars">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </div>
+                        <p class="t-text">"Migrating from Jira took literally one afternoon. The import was flawless, the onboarding is intuitive, and we shipped our first sprint in week one."</p>
+                        <div class="t-author">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120&auto=format&fit=crop&crop=face" alt="Amina Larson" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                            <div class="t-info">
+                                <div class="t-name">Amina Larson</div>
+                                <div class="t-title">Head of Product, Atomix</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </section>
+
+        <!-- ROI CALCULATOR -->
+        <section class="section-pad">
+            <div class="container">
+                <div class="roi-calc reveal">
+                    <div class="roi-grid">
+                        <div class="roi-inputs">
+                            <h3>Calculate your team's savings</h3>
+                            <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">See how much time and resources FlowDesk frees up for your high-impact work.</p>
+                            <div class="slider-wrap">
+                                <div class="slider-label"><span>Team Size</span><span id="team-size-val">25</span></div>
+                                <input type="range" id="team-slider" min="5" max="250" value="25">
+                            </div>
+                        </div>
+                        <div class="roi-results">
+                            <div class="roi-stat">
+                                <span class="roi-val" id="hours-saved">400</span>
+                                <span class="roi-label">Hours saved / month</span>
+                            </div>
+                            <div class="roi-stat">
+                                <span class="roi-val" id="money-saved">$24k</span>
+                                <span class="roi-label">Est. Monthly ROI</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. PRICING -->
+        <section id="pricing" class="section-pad pricing reveal">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="badge" style="margin-bottom:1rem;">Simple pricing</span>
+                    <h2>Start free. Scale when you need to.</h2>
+                    <p>No hidden fees. No per-seat price shocks. Cancel anytime.</p>
+                </div>
+
+                <div class="pricing-toggle reveal">
+                    <span>Monthly</span>
+                    <div class="toggle-pill" id="toggle-pill"></div>
+                    <span>Yearly</span>
+                    <span class="save-badge">20% Off</span>
+                </div>
+
+                <div class="pricing-grid">
+                    <!-- Free Tier -->
+                    <div class="pricing-card reveal delay-1">
+                        <div class="tier-name">Free</div>
+                        <div class="tier-price">$0</div>
+                        <div class="tier-period">Forever free</div>
+                        <p class="tier-desc">For small teams just getting started. No credit card, no commitment, no catch.</p>
+                        <ul class="tier-features">
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Up to 5 team members</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>3 active projects</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>List & Kanban views</li>
+                        </ul>
+                        <button class="btn-pricing">Start Free Trial</button>
+                    </div>
+
+                    <!-- Pro Tier -->
+                    <div class="pricing-card featured reveal delay-2">
+                        <div class="popular-tag">Most Popular</div>
+                        <div class="tier-name">Pro</div>
+                        <div class="tier-price" id="pro-price" data-monthly="12" data-annual="9">$12</div>
+                        <div class="tier-period">per seat / month</div>
+                        <p class="tier-desc">For growing teams that need speed, automation, and reporting without enterprise overhead.</p>
+                        <ul class="tier-features">
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Unlimited team members</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Unlimited projects</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>All views + Timeline</li>
+                        </ul>
+                        <button class="btn-pricing">Start Free Trial</button>
+                    </div>
+
+                    <!-- Team Tier -->
+                    <div class="pricing-card reveal delay-3">
+                        <div class="tier-name">Team</div>
+                        <div class="tier-price" id="team-price" data-monthly="29" data-annual="24">$29</div>
+                        <div class="tier-period">per seat / month</div>
+                        <p class="tier-desc">For large organizations needing SSO, advanced permissions, audit logs, and dedicated SLAs.</p>
+                        <ul class="tier-features">
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Everything in Pro</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>SSO & SAML 2.0</li>
+                            <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Role-based permissions</li>
+                        </ul>
+                        <button class="btn-pricing">Start Free Trial</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. FAQ SECTION -->
+        <section id="faq" class="section-pad faq reveal">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="badge" style="margin-bottom: 1rem;">Common questions</span>
+                    <h2>Anything else?</h2>
+                    <p>Everything you need to know about FlowDesk and how it works.</p>
+                </div>
+
+                <div class="faq-list">
+                    <!-- FAQ 1 -->
+                    <div class="faq-item reveal delay-1">
+                        <button class="faq-btn">
+                            How long does it take to migrate from Jira or Trello?
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Most teams complete their migration in under 30 minutes. Our automated importer pulls in your projects, tasks, custom labels, and even attachments directly through the API.</p>
+                        </div>
+                    </div>
+                    <!-- FAQ 2 -->
+                    <div class="faq-item reveal delay-2">
+                        <button class="faq-btn">
+                            Can we invite external clients to projects?
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Yes. You can invite guests to specific projects with limited permissions. Guests don't count towards your seat limit on the Pro and Team plans.</p>
+                        </div>
+                    </div>
+                    <!-- FAQ 3 -->
+                    <div class="faq-item reveal delay-3">
+                        <button class="faq-btn">
+                            Is there a mobile app?
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Absolutely. FlowDesk is available on iOS and Android with full offline support, so you can manage your team from anywhere.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. FINAL CTA -->
+        <section class="final-cta reveal" style="background: #0D1117;">
+            <div class="container final-cta-inner">
+                <h2>Join 12,000+ teams already using FlowDesk.</h2>
+                <p>Stop duct-taping tools. Start shipping faster with the work OS built for remote teams.</p>
+                <a href="#" class="btn-primary" style="font-size: 1rem; padding: 1rem 2.5rem; margin-bottom: 1.25rem;">
+                    Start Free Trial — It's Free
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+                <p class="hero-subtext">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    No credit card required. 14-day free trial. Cancel anytime.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="nav-logo">
+                        <div class="logo-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        </div>
+                        FlowDesk
+                    </a>
+                    <p>The work OS for modern teams. Ship products faster with built-in async workflows.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Product</h5>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Integrations</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Customers</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Resources</h5>
+                    <ul>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Slack Community</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>&copy; 2026 FlowDesk, Inc. All rights reserved.</div>
+                <div class="social-links">
+                    <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+                    <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for Reveal Animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+            // Header Scroll Effect
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Mobile Menu Toggle
+            const mobileBtn = document.getElementById('mobile-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileClose = document.getElementById('mobile-close');
+
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+
+            mobileClose.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+
+            // Smooth Scroll for mobile menu links
+            document.querySelectorAll('.mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            // FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.faq-btn');
+                btn.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all others
+                    faqItems.forEach(i => {
+                        i.classList.remove('active');
+                        i.querySelector('.faq-answer').style.maxHeight = null;
+                    });
+
+                    if (!isActive) {
+                        item.classList.add('active');
+                        item.querySelector('.faq-answer').style.maxHeight = item.querySelector('.faq-answer').scrollHeight + 'px';
+                    }
+                });
+            });
+
+            // ROI Calculator Logic
+            const slider = document.getElementById('team-slider');
+            const teamVal = document.getElementById('team-size-val');
+            const hoursVal = document.getElementById('hours-saved');
+            const moneyVal = document.getElementById('money-saved');
+
+            function updateROI() {
+                const size = parseInt(slider.value);
+                const hours = size * 16; // 4 hours per week * 4 weeks
+                const money = hours * 60; // $60 average hourly rate
+
+                teamVal.innerText = size;
+                hoursVal.innerText = hours.toLocaleString();
+                moneyVal.innerText = "$" + (money >= 1000 ? (money/1000).toFixed(1) + "k" : money);
+            }
+
+            slider.addEventListener('input', updateROI);
+            updateROI(); // Init
+
+            // Pricing Toggle Logic
+            const toggle = document.getElementById('toggle-pill');
+            const proPrice = document.getElementById('pro-price');
+            const teamPrice = document.getElementById('team-price');
+            let isAnnual = false;
+
+            toggle.addEventListener('click', () => {
+                isAnnual = !isAnnual;
+                toggle.classList.toggle('annual', isAnnual);
+                
+                if (isAnnual) {
+                    proPrice.innerText = '$' + proPrice.dataset.annual;
+                    teamPrice.innerText = '$' + teamPrice.dataset.annual;
+                } else {
+                    proPrice.innerText = '$' + proPrice.dataset.monthly;
+                    teamPrice.innerText = '$' + teamPrice.dataset.monthly;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
