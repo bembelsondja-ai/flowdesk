@@ -40,6 +40,15 @@
             --shadow-purple: 0 8px 30px rgba(108, 99, 255, 0.25);
         }
 
+        [data-theme="dark"] {
+            --color-white: #161B22;
+            --color-bg: #0D1117;
+            --color-dark: #E6EDF3;
+            --color-dark-2: #E6EDF3;
+            --color-text-muted: #9CA3AF;
+            --color-border: rgba(255, 255, 255, 0.1);
+        }
+
         /* RESET & BASE */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
@@ -60,6 +69,13 @@
         .container { max-width: 1120px; margin: 0 auto; padding: 0 1.5rem; }
         .section-pad { padding: 5rem 0; }
         @media(min-width: 768px) { .section-pad { padding: 7rem 0; } }
+
+        /* Dark Mode Toggle */
+        .theme-toggle { background: transparent; border: none; cursor: pointer; color: var(--color-dark); display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; transition: background 0.3s ease, color 0.3s ease; }
+        .theme-toggle:hover { background: var(--color-purple-faint); }
+        .theme-toggle svg { width: 20px; height: 20px; }
+        
+        .anim-bar { transition: width 1.5s ease-out; }
 
         /* Reveal Animations */
         .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -438,12 +454,15 @@
             </a>
             <nav class="desktop-nav">
                 <a href="#features">Features</a>
-                <a href="#workflow">Workflow</a>
+                <a href="#features">Workflow</a>
                 <a href="#pricing">Pricing</a>
                 <a href="#faq">FAQ</a>
-                <a href="#">Resources</a>
+                <a href="#faq">Resources</a>
             </nav>
             <div class="nav-actions">
+                <button id="theme-toggle" class="theme-toggle">
+                    <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
                 <a href="#" class="btn-ghost" style="padding: 0.6rem 1.25rem; font-size:0.875rem;">Log In</a>
                 <a href="#" class="btn-primary" style="padding: 0.6rem 1.25rem; font-size:0.875rem;">Get Started</a>
             </div>
@@ -459,9 +478,10 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
         <a href="#features">Features</a>
-        <a href="#workflow">Workflow</a>
+        <a href="#features">Workflow</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
+        <a href="#faq">Resources</a>
         <br>
         <a href="#" class="btn-primary">Start Free Trial</a>
     </div>
@@ -574,19 +594,19 @@
             <div class="container">
                 <div class="metrics-grid">
                     <div class="metric-item">
-                        <div class="metric-number">1,200+</div>
+                        <div class="metric-number anim-stat" data-target="1200" data-format="+">0+</div>
                         <div class="metric-label">Active Teams</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-number">4.9/5</div>
+                        <div class="metric-number anim-stat" data-target="4.9" data-format="/5" data-float="true">0/5</div>
                         <div class="metric-label">Average Rating</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-number">12min</div>
+                        <div class="metric-number anim-stat" data-target="12" data-format="min">0min</div>
                         <div class="metric-label">Saved per Standup</div>
                     </div>
                     <div class="metric-item">
-                        <div class="metric-number">99.9%</div>
+                        <div class="metric-number anim-stat" data-target="99.9" data-format="%" data-float="true">0%</div>
                         <div class="metric-label">Uptime Record</div>
                     </div>
                 </div>
@@ -652,10 +672,12 @@
                             <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Smart workload management</li>
                         </ul>
                     </div>
-                    <div class="feature-visual reveal-left">
-                        <div class="fv-placeholder" style="justify-content:center;">
-                            <div class="fv-card"><div class="fv-bar filled" style="width:70%;"></div><div class="fv-label">Sprint completion</div><div class="fv-pct">78%</div></div>
-                            <div class="fv-card"><div class="fv-bar filled" style="width:45%; background:#10B981;"></div><div class="fv-label">Lead time</div><div class="fv-pct">2.4d</div></div>
+                    <div class="feature-visual reveal-left" id="bars-container">
+                        <div class="fv-placeholder" style="justify-content:center; padding: 2rem;">
+                            <div class="fv-card"><div class="fv-bar filled anim-bar" data-width="78" style="width:0%;"></div><div class="fv-label">Sprint completion</div><div class="fv-pct">78%</div></div>
+                            <div class="fv-card"><div class="fv-bar filled anim-bar" data-width="45" style="width:0%; background:#10B981;"></div><div class="fv-label">Lead time</div><div class="fv-pct">2.4d</div></div>
+                            <div class="fv-card"><div class="fv-bar filled anim-bar" data-width="94" style="width:0%; background:var(--color-purple);"></div><div class="fv-label">Team velocity</div><div class="fv-pct">94%</div></div>
+                            <div class="fv-card"><div class="fv-bar filled anim-bar" data-width="87" style="width:0%; background:var(--color-success);"></div><div class="fv-label">Bug resolution</div><div class="fv-pct">87%</div></div>
                         </div>
                     </div>
                 </div>
@@ -727,12 +749,15 @@
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                         </div>
                         <p class="t-text">"We cut our Monday morning status meeting from 60 minutes to zero. FlowDesk's daily digest does what we used to do manually. Our engineers have an extra 4 hours per week back."</p>
-                        <div class="t-author">
-                            <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=120&auto=format&fit=crop&crop=face" alt="Sara Kovacs" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
-                            <div class="t-info">
-                                <div class="t-name">Sara Kovacs</div>
-                                <div class="t-title">CTO, Prive Labs</div>
+                        <div class="t-author" style="display:flex; align-items:center; justify-content:space-between; width:100%; text-align:left;">
+                            <div style="display:flex; align-items:center; gap:0.75rem;">
+                                <img src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?q=80&w=120&auto=format&fit=crop&crop=face" alt="Sara Kovacs" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                                <div class="t-info">
+                                    <div class="t-name" style="display:flex; align-items:center; gap:4px;">Sara Kovacs <svg width="14" height="14" viewBox="0 0 24 24" fill="#6C63FF"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+                                    <div class="t-title">CTO, Prive Labs</div>
+                                </div>
                             </div>
+                            <svg width="40" height="20" viewBox="0 0 100 30" fill="currentColor" style="opacity:0.3;"><path d="M10 15h80v4H10zM10 5h50v4H10zM10 25h40v4H10z"/></svg>
                         </div>
                     </div>
                     <div class="t-card reveal delay-2">
@@ -744,12 +769,15 @@
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                         </div>
                         <p class="t-text">"I've used every tool in the book. FlowDesk is the first one where my reports actually update their tasks proactively. The async comment system is a game changer."</p>
-                        <div class="t-author">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=120&auto=format&fit=crop&crop=face" alt="Daniel Mwangi" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
-                            <div class="t-info">
-                                <div class="t-name">Daniel Mwangi</div>
-                                <div class="t-title">Team Lead, Voltex</div>
+                        <div class="t-author" style="display:flex; align-items:center; justify-content:space-between; width:100%; text-align:left;">
+                            <div style="display:flex; align-items:center; gap:0.75rem;">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=120&auto=format&fit=crop&crop=face" alt="Daniel Mwangi" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                                <div class="t-info">
+                                    <div class="t-name" style="display:flex; align-items:center; gap:4px;">Daniel Mwangi <svg width="14" height="14" viewBox="0 0 24 24" fill="#6C63FF"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+                                    <div class="t-title">Team Lead, Voltex</div>
+                                </div>
                             </div>
+                            <svg width="30" height="30" viewBox="0 0 100 100" fill="currentColor" style="opacity:0.3;"><path d="M50 0 L100 80 L0 80 Z"/></svg>
                         </div>
                     </div>
                     <div class="t-card reveal delay-3">
@@ -761,12 +789,15 @@
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                         </div>
                         <p class="t-text">"Migrating from Jira took literally one afternoon. The import was flawless, the onboarding is intuitive, and we shipped our first sprint in week one."</p>
-                        <div class="t-author">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120&auto=format&fit=crop&crop=face" alt="Amina Larson" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
-                            <div class="t-info">
-                                <div class="t-name">Amina Larson</div>
-                                <div class="t-title">Head of Product, Atomix</div>
+                        <div class="t-author" style="display:flex; align-items:center; justify-content:space-between; width:100%; text-align:left;">
+                            <div style="display:flex; align-items:center; gap:0.75rem;">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120&auto=format&fit=crop&crop=face" alt="Amina Larson" class="t-photo" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                                <div class="t-info">
+                                    <div class="t-name" style="display:flex; align-items:center; gap:4px;">Amina Larson <svg width="14" height="14" viewBox="0 0 24 24" fill="#6C63FF"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+                                    <div class="t-title">Head of Product, Atomix</div>
+                                </div>
                             </div>
+                            <svg width="30" height="30" viewBox="0 0 30 30" fill="currentColor" style="opacity:0.3;"><circle cx="15" cy="15" r="15"/></svg>
                         </div>
                     </div>
                 </div>
@@ -797,6 +828,8 @@
                                 <span class="roi-val" id="money-saved">$24k</span>
                                 <span class="roi-label">Est. Monthly ROI</span>
                             </div>
+                            <p style="color: rgba(255,255,255,0.7); margin-top:1.5rem; font-size:0.9rem;" id="roi-compare">That's equivalent to hiring 2 additional team members</p>
+                            <button class="btn-ghost" style="margin-top:1.5rem; width:100%; justify-content:center; border: 1px solid rgba(255,255,255,0.2); color:white; background:transparent;" onclick="alert('Results copied to clipboard!')">Share Results</button>
                         </div>
                     </div>
                 </div>
@@ -816,7 +849,7 @@
                     <span>Monthly</span>
                     <div class="toggle-pill" id="toggle-pill"></div>
                     <span>Yearly</span>
-                    <span class="save-badge">20% Off</span>
+                    <span class="save-badge" id="save-badge" style="background:var(--color-success); color:white; font-size:0.75rem; padding:3px 10px; border-radius:12px; margin-left:0.5rem; opacity:0; transition:opacity 0.3s;">Save 20%</span>
                 </div>
 
                 <div class="pricing-grid">
@@ -838,8 +871,9 @@
                     <div class="pricing-card featured reveal delay-2">
                         <div class="popular-tag">Most Popular</div>
                         <div class="tier-name">Pro</div>
-                        <div class="tier-price" id="pro-price" data-monthly="12" data-annual="9">$12</div>
+                        <div class="tier-price" id="pro-price" data-monthly="12" data-annual="9" style="transition: opacity 0.3s, transform 0.3s;">$12</div>
                         <div class="tier-period">per seat / month</div>
+                        <p class="save-text" id="save-text-pro" style="color:var(--color-success); font-weight:600; font-size:0.85rem; height:20px; margin:0.25rem 0; transition: opacity 0.3s; opacity:0;"></p>
                         <p class="tier-desc">For growing teams that need speed, automation, and reporting without enterprise overhead.</p>
                         <ul class="tier-features">
                             <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Unlimited team members</li>
@@ -852,8 +886,9 @@
                     <!-- Team Tier -->
                     <div class="pricing-card reveal delay-3">
                         <div class="tier-name">Team</div>
-                        <div class="tier-price" id="team-price" data-monthly="29" data-annual="24">$29</div>
+                        <div class="tier-price" id="team-price" data-monthly="29" data-annual="24" style="transition: opacity 0.3s, transform 0.3s;">$29</div>
                         <div class="tier-period">per seat / month</div>
+                        <p class="save-text" id="save-text-team" style="color:var(--color-success); font-weight:600; font-size:0.85rem; height:20px; margin:0.25rem 0; transition: opacity 0.3s; opacity:0;"></p>
                         <p class="tier-desc">For large organizations needing SSO, advanced permissions, audit logs, and dedicated SLAs.</p>
                         <ul class="tier-features">
                             <li><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Everything in Pro</li>
@@ -979,54 +1014,110 @@
     </footer>
 
     <script>
-        // Intersection Observer for Reveal Animations
         document.addEventListener('DOMContentLoaded', () => {
+            // Dark Mode Toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            function updateThemeIcon(isDark) {
+                if(isDark) {
+                    themeIcon.innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>';
+                } else {
+                    themeIcon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+                }
+            }
+
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                updateThemeIcon(true);
+            } else {
+                updateThemeIcon(false);
+            }
+
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+                if (isDark) {
+                    document.documentElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    updateThemeIcon(false);
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    updateThemeIcon(true);
+                }
+            });
+
+            // Intersection Observer for Reveal Animations & Stats
             const observerOptions = {
                 threshold: 0.1,
                 rootMargin: '0px 0px -50px 0px'
+            };
+
+            const animateValue = (obj, start, end, duration, formatStr = "", isFloat = false) => {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const val = progress * (end - start) + start;
+                    obj.innerText = isFloat ? val.toFixed(1) + formatStr : Math.floor(val) + formatStr;
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
             };
 
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('active');
+                        
+                        // Animated bars
+                        if (entry.target.id === 'bars-container') {
+                            entry.target.querySelectorAll('.anim-bar').forEach(bar => {
+                                bar.style.width = bar.getAttribute('data-width') + '%';
+                            });
+                        }
+                        
+                        // Animated metrics
+                        if (entry.target.classList.contains('metrics-bar')) {
+                            entry.target.querySelectorAll('.anim-stat').forEach(stat => {
+                                if (!stat.classList.contains('animated')) {
+                                    stat.classList.add('animated');
+                                    const target = parseFloat(stat.getAttribute('data-target'));
+                                    const formatStr = stat.getAttribute('data-format') || '';
+                                    const isFloat = stat.hasAttribute('data-float');
+                                    animateValue(stat, 0, target, 2000, formatStr, isFloat);
+                                }
+                            });
+                        }
                     }
                 });
             }, observerOptions);
 
-            document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .metrics-bar, #bars-container').forEach(el => observer.observe(el));
 
             // Header Scroll Effect
             const header = document.getElementById('header');
             window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
+                header.classList.toggle('scrolled', window.scrollY > 50);
             });
 
-            // Mobile Menu Toggle
+            // Mobile Menu
             const mobileBtn = document.getElementById('mobile-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             const mobileClose = document.getElementById('mobile-close');
 
-            mobileBtn.addEventListener('click', () => {
-                mobileMenu.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
+            const toggleMobile = (show) => {
+                mobileMenu.classList.toggle('active', show);
+                document.body.style.overflow = show ? 'hidden' : '';
+            };
 
-            mobileClose.addEventListener('click', () => {
-                mobileMenu.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-
-            // Smooth Scroll for mobile menu links
+            mobileBtn.addEventListener('click', () => toggleMobile(true));
+            mobileClose.addEventListener('click', () => toggleMobile(false));
             document.querySelectorAll('.mobile-menu a').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenu.classList.remove('active');
-                    document.body.style.overflow = '';
-                });
+                link.addEventListener('click', () => toggleMobile(false));
             });
 
             // FAQ Accordion
@@ -1035,13 +1126,10 @@
                 const btn = item.querySelector('.faq-btn');
                 btn.addEventListener('click', () => {
                     const isActive = item.classList.contains('active');
-                    
-                    // Close all others
                     faqItems.forEach(i => {
                         i.classList.remove('active');
                         i.querySelector('.faq-answer').style.maxHeight = null;
                     });
-
                     if (!isActive) {
                         item.classList.add('active');
                         item.querySelector('.faq-answer').style.maxHeight = item.querySelector('.faq-answer').scrollHeight + 'px';
@@ -1054,38 +1142,81 @@
             const teamVal = document.getElementById('team-size-val');
             const hoursVal = document.getElementById('hours-saved');
             const moneyVal = document.getElementById('money-saved');
+            const roiCompare = document.getElementById('roi-compare');
+            let lastHours = 400;
+            let lastMoney = 24000;
 
             function updateROI() {
                 const size = parseInt(slider.value);
-                const hours = size * 16; // 4 hours per week * 4 weeks
-                const money = hours * 60; // $60 average hourly rate
+                const hours = size * 16; 
+                const money = hours * 60; 
 
                 teamVal.innerText = size;
-                hoursVal.innerText = hours.toLocaleString();
-                moneyVal.innerText = "$" + (money >= 1000 ? (money/1000).toFixed(1) + "k" : money);
+                animateValue(hoursVal, lastHours, hours, 300);
+                
+                // Custom animation for money
+                let startTimestamp = null;
+                const mStart = lastMoney;
+                const mEnd = money;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / 300, 1);
+                    const val = progress * (mEnd - mStart) + mStart;
+                    moneyVal.innerText = "$" + (val >= 1000 ? (val/1000).toFixed(1) + "k" : Math.floor(val));
+                    if (progress < 1) window.requestAnimationFrame(step);
+                };
+                window.requestAnimationFrame(step);
+                
+                if (roiCompare) {
+                    roiCompare.innerText = `That's equivalent to hiring ${Math.ceil(size / 10)} additional team members`;
+                }
+                
+                lastHours = hours;
+                lastMoney = money;
             }
 
-            slider.addEventListener('input', updateROI);
-            updateROI(); // Init
+            if(slider) {
+                slider.addEventListener('input', updateROI);
+                updateROI(); // Init
+            }
 
             // Pricing Toggle Logic
             const toggle = document.getElementById('toggle-pill');
             const proPrice = document.getElementById('pro-price');
             const teamPrice = document.getElementById('team-price');
+            const saveBadge = document.getElementById('save-badge');
+            const saveTextPro = document.getElementById('save-text-pro');
+            const saveTextTeam = document.getElementById('save-text-team');
+            
             let isAnnual = false;
 
-            toggle.addEventListener('click', () => {
-                isAnnual = !isAnnual;
-                toggle.classList.toggle('annual', isAnnual);
-                
-                if (isAnnual) {
-                    proPrice.innerText = '$' + proPrice.dataset.annual;
-                    teamPrice.innerText = '$' + teamPrice.dataset.annual;
-                } else {
-                    proPrice.innerText = '$' + proPrice.dataset.monthly;
-                    teamPrice.innerText = '$' + teamPrice.dataset.monthly;
-                }
-            });
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    isAnnual = !isAnnual;
+                    toggle.classList.toggle('annual', isAnnual);
+                    saveBadge.style.opacity = isAnnual ? "1" : "0";
+                    
+                    [proPrice, teamPrice, saveTextPro, saveTextTeam].forEach(el => el.style.opacity = "0");
+                    
+                    setTimeout(() => {
+                        if (isAnnual) {
+                            proPrice.innerText = '$' + proPrice.dataset.annual;
+                            teamPrice.innerText = '$' + teamPrice.dataset.annual;
+                            saveTextPro.innerText = `You save $${(proPrice.dataset.monthly - proPrice.dataset.annual) * 12}/year`;
+                            saveTextTeam.innerText = `You save $${(teamPrice.dataset.monthly - teamPrice.dataset.annual) * 12}/year`;
+                            saveTextPro.style.opacity = "1";
+                            saveTextTeam.style.opacity = "1";
+                        } else {
+                            proPrice.innerText = '$' + proPrice.dataset.monthly;
+                            teamPrice.innerText = '$' + teamPrice.dataset.monthly;
+                            saveTextPro.style.opacity = "0";
+                            saveTextTeam.style.opacity = "0";
+                        }
+                        proPrice.style.opacity = "1";
+                        teamPrice.style.opacity = "1";
+                    }, 300);
+                });
+            }
         });
     </script>
 </body>
